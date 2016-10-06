@@ -1,28 +1,37 @@
 package NikitaS;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
-    ArrayList<String> results;
+    static ArrayList<String> results;
+    static String header="============Welcome to Game==============";//FixMe: Get title
+    static String mainPrompt = "Type in one of the following: \n \"Play\" \n \"History\" \n \"Quit\" \n";
+    static String[] validEntries = {"rock", "scissors", "paper", "r", "s", "p"};
+    static String playerActionMessage="Enter \""+validEntries[0]+"\", \""+ validEntries[1]+"\" or \""+validEntries[2]+"\" or just the first letter:";
+
+    static Integer playerScore;
+    static Integer computerScore;
+
+    static String player = "Player";
+    static String cpu = "CPU";
 
     public static void main(String[] args) {
+        computerScore = 0;
+        playerScore = 0;
+
         int rounds;
         displayMainMenu();
 
 
     }
     public static void displayMainMenu(){
-        String header = "============Welcome to Game==============";//FixMe: Get title
-        String mainPrompt = "Type in one of the following: \n \"Play\" \n \"History\" \n \"Quit\" \n";
-
         System.out.println(header);
         userMainEntry(removeCaseSensitive(getInput(mainPrompt)));
     }
 
     public static void userMainEntry(String userInput){
-        String incorrectEntryMessage = "Let's try this one more time. Type in one of the following:\n \"Play\" " +
-                "\n \"History\" \n \"Quit\" \n";
         if (userInput.equals("play") || userInput.equals("p")){
             playRound();
         } else if (userInput.equals("history")|| userInput.equals("h")) {
@@ -55,8 +64,6 @@ public class Main {
     }
 
     public static void playRound(){
-        String[] validEntries = {"rock", "scissors", "paper", "r", "s", "p"};
-        String playerActionMessage="Enter \"rock\", \" paper\" or \"scissors\" or just the first letter:";
         String playerThrow = removeCaseSensitive(getInput(playerActionMessage));
         boolean validInput= false;
         for (int i = 0; i < validEntries.length ; i++) {
@@ -76,7 +83,7 @@ public class Main {
                     playerThrow = "paper";
                     break;
             }
-            System.out.println(playerThrow);
+            System.out.println(checkOutcome(playerThrow));
             playRound();
         }else {
             System.out.println("Not a valid option");
@@ -84,7 +91,34 @@ public class Main {
         }
     }
     public static String checkOutcome(String playerThrows){
-        return "Butt";
+        String winner;
+        Random randomGen = new Random();
+        int compThrowIndex = randomGen.nextInt(3);
+
+        if (playerThrows.equals(validEntries[compThrowIndex])){
+            winner = "No one";
+        }else if (playerThrows.equals("scissors")) {
+            if (compThrowIndex == 0) {
+                winner = cpu;
+            } else {
+                winner = player;
+            }
+        }
+            else if(playerThrows.equals("paper")) {
+            if (compThrowIndex == 0) {
+                winner = player;
+            } else {
+                winner = cpu;
+            }
+        }else{
+            if (compThrowIndex==1){
+                winner = player;
+            }else{
+                winner= cpu;
+            }
+        }
+        String message = "CPU threw: "+ validEntries[compThrowIndex]+ "  Player threw: "+playerThrows+ "\n "+ winner + " wins!\n";
+        return message;
     }
 
 

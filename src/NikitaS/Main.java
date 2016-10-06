@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
-    static ArrayList<String> results;
+    static ArrayList<String> results= new ArrayList<>();
     static String header="============Welcome to Game==============";//FixMe: Get title
     static String mainPrompt = "Type in one of the following: \n \"Play\" \n \"History\" \n \"Quit\" \n";
     static String[] validEntries = {"rock", "scissors", "paper", "r", "s", "p"};
@@ -55,7 +55,13 @@ public class Main {
     }
 
     public static void displayHistory(){
-        System.out.println("This will do a thing, History");
+        if (results.size()==0){
+            System.out.println("There is no history to display yet. \n Why don't you play a few rounds?");
+        }else {
+            for (String s : results) {
+                System.out.println(s);
+            }
+        }
         displayMainMenu();
     }
     public static void endGame(){
@@ -84,7 +90,7 @@ public class Main {
                     break;
             }
             System.out.println(checkOutcome(playerThrow));
-            playRound();
+            displayMainMenu(); //ToDo: Change this to repeat if I'm doing multiple rounds in a match.
         }else {
             System.out.println("Not a valid option");
             playRound();
@@ -97,14 +103,14 @@ public class Main {
 
         if (playerThrows.equals(validEntries[compThrowIndex])){
             winner = "No one";
-        }else if (playerThrows.equals("scissors")) {
+        }else if (playerThrows.equals(validEntries[1])) {
             if (compThrowIndex == 0) {
                 winner = cpu;
             } else {
                 winner = player;
             }
         }
-            else if(playerThrows.equals("paper")) {
+            else if(playerThrows.equals(validEntries[2])) {
             if (compThrowIndex == 0) {
                 winner = player;
             } else {
@@ -118,9 +124,18 @@ public class Main {
             }
         }
         String message = "CPU threw: "+ validEntries[compThrowIndex]+ "  Player threw: "+playerThrows+ "\n "+ winner + " wins!\n";
+        if (winner.equals("No one")){
+            winner="Tie";
+        }
+        logResults(winner, validEntries[compThrowIndex], playerThrows);
         return message;
     }
 
+    public static void logResults(String winner, String computersThrow, String playersThrow){
+        //ToDO: Add round number if I do matches.
+        String logMessage = String.format("Win went to: %s Player threw: %s  computer threw: %s poop", winner, computersThrow, playersThrow);
+        results.add(logMessage);
+    }
 
 //    public static String askBestOf(){
 //        String message = "Best of how many rounds do you want to play? (It must be an odd number between 1-21\n Decimal numbers will be rounded down)";

@@ -11,24 +11,26 @@ public class Main {
     static String[] validEntries = {"rock", "scissors", "paper", "r", "s", "p"};
     static String playerActionMessage = "Enter \"" + validEntries[0] + "\", \"" + validEntries[1] + "\" or \"" + validEntries[2] + "\" or just the first letter:";
 
-    static Integer playerScore;
-    static Integer computerScore;
+    static int playerScore;
+    static int cpuScore;
 
     static String player = "Player";
     static String cpu = "CPU";
 
-    static String bestOfPrompt = "Best of how many rounds do you want to play? (It must be an odd number between 1-21\n Decimal numbers will be rounded down)";
+    static String bestOfPrompt = "Best of how many rounds do you want to play? (It must be an odd number between 1-21";
 
 
     static int round;
-    static int totalRounds;
+    static int bestOf;
+
+
 //ToDo: Make a basic AI
     //ToDo: Make a bestOf prompt
     //ToDo: Audio? Graphics?
 
     public static void main(String[] args) {
         round = 0;//ToDo: change this value to get the value from load if I'm going to do that.
-        computerScore = 0;
+        cpuScore = 0;
         playerScore = 0;
 
         displayMainMenu();
@@ -37,14 +39,16 @@ public class Main {
     }
 
     public static void displayMainMenu() {
+        playerScore =0;
+        cpuScore=0;
         System.out.println(header);
         userMainEntry(removeCaseSensitive(getInput(mainPrompt)));
     }
 
     public static void userMainEntry(String userInput) {
         if (userInput.equals("play") || userInput.equals("p")) {
-            totalRounds = Integer.valueOf(askBestOf());
-            playRound(totalRounds);
+            askBestOf();
+            playRound();
         } else if (userInput.equals("history") || userInput.equals("h")) {
             displayHistory();
         } else if (userInput.equals("quit") || userInput.equals("q")) {
@@ -81,13 +85,15 @@ public class Main {
         displayMainMenu();
     }
 
-    public static void playRound(int roundsInMatch) {
-        if (roundsInMatch>0) {
+    public static void playRound() {
+        if (playerScore < (bestOf/2)+1 && cpuScore <(bestOf/2)+1) {//Checks that both players have less than required score. e.g. 2 of 3, 3 of 5, 4 of 7
+            round++;
             String playerThrow = removeCaseSensitive(getInput(playerActionMessage));
             boolean validInput = false;
             for (int i = 0; i < validEntries.length; i++) {
                 if (playerThrow.equals(validEntries[i])) {
                     validInput = true;
+                    break;
                 }
             }
             if (validInput) {
@@ -103,13 +109,20 @@ public class Main {
                         break;
                 }
                 System.out.println(checkOutcome(playerThrow));
-                playRound(roundsInMatch-1);
+                playRound();
             } else {
                 System.out.println("Not a valid option");
-                playRound(roundsInMatch);
+                playRound();
             }
         } else{
             System.out.println("Match is over");
+            String matchResultMessage;
+            if (playerScore>cpuScore){
+                matchResultMessage= String.format("The player won the match with a score of %s : %s ", String.valueOf(playerScore), String.valueOf(cpuScore));
+            }else{
+                matchResultMessage= String.format("The computer won the match with a score of %s : %s ",String.valueOf(cpuScore), String.valueOf(playerScore));
+            }
+            results.add(matchResultMessage);
             displayMainMenu();
         }
     }
@@ -124,23 +137,30 @@ public class Main {
         } else if (playerThrows.equals(validEntries[1])) {
             if (compThrowIndex == 0) {
                 winner = cpu;
+                cpuScore ++;
             } else {
                 winner = player;
+                playerScore++;
             }
         } else if (playerThrows.equals(validEntries[2])) {
             if (compThrowIndex == 0) {
                 winner = player;
+                playerScore++;
             } else {
                 winner = cpu;
+                cpuScore++;
             }
         } else {
             if (compThrowIndex == 1) {
                 winner = player;
+                playerScore++;
             } else {
                 winner = cpu;
+                cpuScore++;
             }
         }
         String message = "CPU threw: " + validEntries[compThrowIndex] + "  Player threw: " + playerThrows + "\n " + winner + " wins!\n";
+        message+= "\n Current Score \n CPU: "+ cpuScore + "\nPlayer: "+ playerScore;
         if (winner.equals("No one")) {
             winner = "Tie";
         }
@@ -150,11 +170,11 @@ public class Main {
 
     public static void logResults(String winner, String computersThrow, String playersThrow) {
         //ToDO: Add round number if I do matches.
-        String logMessage = String.format("Win went to: %s | Player threw: %s | Computer threw: %s", winner, computersThrow, playersThrow);
+        String logMessage = String.format("Round#%s|| Win went to: %s | Player threw: %s | Computer threw: %s",String.valueOf(round), winner, computersThrow, playersThrow);
         results.add(logMessage);
     }
     //FixMe: Something funky going on in this method that is causing it to keep userInput from invalid user input.
-    public static String askBestOf() {
+    public static void askBestOf() {
         String userInput = getInput(bestOfPrompt);
         try {
             Integer.valueOf(userInput);
@@ -164,11 +184,12 @@ public class Main {
             } else if (Integer.valueOf(userInput) % 2 == 0) {
                 System.out.println("That is an even number. \n(The reason for it being odd is to prevent matches ending in ties.)\n");
                 askBestOf();
+            } else{
+                bestOf = Integer.valueOf(userInput);
             }
         } catch (Exception e) {
             System.out.println("That is not an integer. Please input an integer");
             askBestOf();
         }
-        return userInput;
     }
 }

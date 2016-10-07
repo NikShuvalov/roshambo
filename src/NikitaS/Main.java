@@ -8,7 +8,7 @@ public class Main {
     static ArrayList<String> results = new ArrayList<>();
     static String header = "============Welcome to Game==============";//FixMe: Get title
     static String mainPrompt = "Type in one of the following: \n \"Play\" \n \"History\" \n \"Quit\" \n";
-    static String[] validEntries = {"rock", "scissors", "paper", "r", "s", "p"};
+    static String[] validEntries = {"rock", "scissors", "paper", "r", "s", "p"}; // 0 beats 1, 1 beats 2, 2 beats 0 Keep that dynamic or everything falls apart.
     static String playerActionMessage = "Enter \"" + validEntries[0] + "\", \"" + validEntries[1] + "\" or \"" + validEntries[2] + "\" or just the first letter:";
 
     static int playerScore;
@@ -25,8 +25,14 @@ public class Main {
 
 
 //ToDo: Make a basic AI
-    //ToDo: Make a bestOf prompt
+    /*
+    Create array of players past 3 moves.
+    -If all moves are the same assume the player is spamming so computer anticipates
+     the next move to be the same and plays the counter to it.
+     -If all moves are different, assume that the player is cycling through the list, so play the counter to the next anticipated one.
+     */
     //ToDo: Audio? Graphics?
+    //
 
     public static void main(String[] args) {
         round = 0;//ToDo: change this value to get the value from load if I'm going to do that.
@@ -118,9 +124,9 @@ public class Main {
             System.out.println("Match is over");
             String matchResultMessage;
             if (playerScore>cpuScore){
-                matchResultMessage= String.format("The player won the match with a score of %s : %s ", String.valueOf(playerScore), String.valueOf(cpuScore));
+                matchResultMessage= String.format("The player won the match with a score of %s : %s \n", String.valueOf(playerScore), String.valueOf(cpuScore));
             }else{
-                matchResultMessage= String.format("The computer won the match with a score of %s : %s ",String.valueOf(cpuScore), String.valueOf(playerScore));
+                matchResultMessage= String.format("The computer won the match with a score of %s : %s \n",String.valueOf(cpuScore), String.valueOf(playerScore));
             }
             results.add(matchResultMessage);
             displayMainMenu();
